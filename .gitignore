@@ -1,1 +1,3 @@
 exploration/data/*.json
+data/*.json
+indexing/elasticsearch_data/nodes
