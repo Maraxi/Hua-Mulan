@@ -18,4 +18,4 @@ $ docker-compose build
 $ docker-compose up
 ``` 
 
-Than create pipenv using pipfile and run main.py.
+Than create pipenv using pipfile and run main.py. Elasticsearch index will be running on `localhost:9200` and save data to `indexing/elasticsearch_data/`.
