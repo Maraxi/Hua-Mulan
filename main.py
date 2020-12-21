@@ -4,15 +4,23 @@ from elasticsearch import Elasticsearch
 import os
 
 es = Elasticsearch()
+indexing = False
+
+
 
 conn = IndexConnector("localhost", "9200", "args")
 dir = "data/"
 
 
-for file in os.listdir(dir):
+#result = conn.query_index("nuclear power or solar energy")
+# for arg in result["hits"]["hits"]:
+#     print(arg)
 
-    with open(dir+file) as file:
-        data = json.load(file)
+if indexing:
+    for file in os.listdir(dir):
 
-        for arg in data["arguments"]:
-            conn.add_document(arg)
+        with open(dir+file) as file:
+            data = json.load(file)
+
+            for arg in data["arguments"]:
+                conn.add_document(arg)

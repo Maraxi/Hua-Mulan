@@ -4,7 +4,7 @@ from elasticsearch import Elasticsearch, helpers
 class IndexConnector:
 
     def __init__(self, host, port, index):
-        self.es = Elasticsearch([{'host': host, 'port': port, 'index':index}])
+        self.es = Elasticsearch([{'host': host, 'port': port, 'index': index}])
         self.index = index
 
     def add_document(self, doc):
@@ -18,8 +18,10 @@ class IndexConnector:
         res = self.es.get(index=self.index, id=id)
         print(res['_source'])
 
-    def search_query(self):
-        res = self.es.search(index="args", body={"query": {"match_all": {}}})
-        print("Got %d Hits:" % res['hits']['total']['value'])
-        for hit in res['hits']['hits']:
-            print(hit["_source"])
+    def query_index(self, querystring):
+        res = self.es.search(index="args",
+                             body={"query":
+                                       {"query_string":
+                                            {"query": querystring
+                                             }}})
+        return res
