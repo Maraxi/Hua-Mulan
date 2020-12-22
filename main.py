@@ -12,9 +12,7 @@ dir = "data/"
 
 
 
-
-
-result = conn.query_index("nuclear power or solar energy")
+result = conn.query_index("nuclear power or solar energy", 100)
 for arg in result["hits"]["hits"]:
     print(arg)
 

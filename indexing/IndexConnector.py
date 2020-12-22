@@ -18,9 +18,10 @@ class IndexConnector:
         res = self.es.get(index=self.index, id=id)
         print(res['_source'])
 
-    def query_index(self, querystring):
+    def query_index(self, querystring, size):
         res = self.es.search(index="args",
-                             body={"query":
+                             body={"size": size,
+                                   "query":
                                        {"query_string":
                                             {"query": querystring
                                              }}})
