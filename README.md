@@ -11,6 +11,8 @@ $ docker-compose build
 $ docker-compose up
 ``` 
 
+## Indexing
+
 For starting and indexing with elasticsearch run following commands in  `.`
 
 ```
@@ -19,3 +21,8 @@ $ docker-compose up
 ``` 
 
 Than create pipenv using pipfile and run main.py. Elasticsearch index will be running on `localhost:9200` and save data to `indexing/elasticsearch_data/`.
+
+## Simple querying
+
+For simple querying create an instance of class `IndexConnector` and call method `query_index()`
+
