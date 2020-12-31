@@ -3,8 +3,14 @@ import os
 import ijson
 
 conn = IndexConnector("localhost", "9200", "args")
-dir = "../data/"
+if conn.count()['count']>0:
+    print("The index is not empty")
+    choice = input("Continue indexing? [y/N]")
+    if choice not in 'yY':
+        print("Canceled indexing")
+        exit(1)
 
+dir = "../data/"
 #iterate over each file in directory
 for file in os.listdir(dir):
     # generate auxiliary structures

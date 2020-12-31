@@ -7,6 +7,9 @@ class IndexConnector:
         self.es = Elasticsearch([{'host': host, 'port': port, 'index': index}])
         self.index = index
 
+    def count(self):
+        return self.es.count()
+
     def add_document(self, doc):
         res = self.es.index(index=self.index, body=doc)
         print(res['result'])
