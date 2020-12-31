@@ -12,7 +12,7 @@ class IndexConnector:
 
     def add_document(self, doc):
         res = self.es.index(index=self.index, body=doc)
-        print(res['result'])
+        print(res)
 
     def add_bulk(self, bulk):
         helpers.bulk(self.es, bulk)
