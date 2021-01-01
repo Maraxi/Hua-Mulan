@@ -1,4 +1,4 @@
-from IndexConnector import IndexConnector
+from index_connector import IndexConnector
 import os
 import ijson
 
@@ -10,7 +10,8 @@ if conn.count()['count']>0:
         print("Canceled indexing")
         exit(1)
 
-dir = "../data/"
+dir = __file__[:__file__.index('Hua-Mulan')]
+dir = f"{dir}Hua-Mulan/data/"
 files = os.listdir(dir)
 assert len(files)>0, f"Found no files to index in {dir}"
 
