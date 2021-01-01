@@ -11,7 +11,7 @@ services:
                         - "9200:9200"
                 volumes:
                         - type: bind
-                          source: ./indexing/elasticsearch_data
+                          source: ../elasticsearch_data
                           target: /usr/share/elasticsearch/data
                 environment:
                         - discovery.type=single-node
