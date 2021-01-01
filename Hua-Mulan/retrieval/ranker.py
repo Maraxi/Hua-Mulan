@@ -1,6 +1,4 @@
 
-class Ranker:
-
-    def rank(self, arguments):
-        return arguments
+def rank(arguments):
+    return arguments
 
