@@ -1,4 +1,4 @@
-from indexing.IndexConnector import IndexConnector
+from indexing.index_connector import IndexConnector
 
 conn = IndexConnector("localhost", "9200", "args")
 
