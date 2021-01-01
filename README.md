@@ -1,35 +1,41 @@
 # Hua-Mulan
 
+## Python virtual environment
+
+To run the python scripts with the correct dependencies installed go to `Hua-Mulan/` and execute
+```
+$ pipenv sync
+$ pipenv shell
+```
+This installes needed modules specified in the `Piplock` file and starts a shell with the correct environment.
 
 ## Data
 
 Download data from https://zenodo.org/record/3734893#.X5BreS337OQ and unzip in `data/`
 
-For data analysis run following commands in `exploration/data/`
+### Data analysis
+
+Run the following commands in `Hua-Mulan/exploration/`
 ```
 $ docker-compose build
 $ docker-compose up
 ```
+Open one of the links given in the output and edit the Jupyter Notebook in a browser.
 
 ## Indexing
 
-For starting and indexing with elasticsearch run following commands in  `.`
+For starting and indexing with elasticsearch run following commands in `Hua-Mulan/`
 
 ```
 $ docker-compose build
 $ docker-compose up
 ```
+Elasticsearch index will be running on `localhost:9200` and save data to `elasticsearch_data/`.
 
-Then setup a python virtual environment with pipenv and activate it
-```
-$ pipenv sync
-$ pipenv shell
-```
 Index the data with:
 ```
 $ python indexing/index.py
 ```
-Elasticsearch index will be running on `localhost:9200` and save data to `indexing/elasticsearch_data/`.
 
 ## Simple querying
 
