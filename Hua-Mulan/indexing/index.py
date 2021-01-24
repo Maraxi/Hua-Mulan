@@ -13,6 +13,8 @@ if conn.count()['count']>0:
 dir = __file__[:__file__.index('Hua-Mulan')]
 dir = f"{dir}Hua-Mulan/data/"
 files = os.listdir(dir)
+files.remove(".gitkeep")
+
 assert len(files)>0, f"Found no files to index in {dir}"
 
 #iterate over each file in directory
