@@ -37,7 +37,12 @@ Index the data with:
 $ python indexing/index.py
 ```
 
+
 ## Simple querying
 
 For simple querying create an instance of class `IndexConnector` and call method `query_index()` as seen in main.py
+
+## Doc2Query
+- doc2query base model from https://github.com/castorini/docTTTTTquery is running in a docker container in the tira network, needs to be extended with get api
+- for running download https://git.uwaterloo.ca/jimmylin/doc2query-data/raw/master/T5-passage/t5-base.zip and unzip in  `Hua-Mulan/doc2query/`
 
