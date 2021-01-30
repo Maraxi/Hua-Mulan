@@ -4,7 +4,7 @@ from elasticsearch import Elasticsearch, helpers
 class IndexConnector:
 
     def __init__(self, host, port, index):
-        self.es = Elasticsearch([{'host': host, 'port': port, 'index': index}])
+        self.es = Elasticsearch([{'host': host, 'port': port, 'index': index}], timeout=30)
         self.index = index
 
     def count(self):
@@ -12,7 +12,7 @@ class IndexConnector:
 
     def add_document(self, doc):
         res = self.es.index(index=self.index, body=doc)
-        print(res)
+        print("created")
 
     def add_bulk(self, bulk):
         helpers.bulk(self.es, bulk)

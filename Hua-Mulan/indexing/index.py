@@ -1,9 +1,10 @@
 from index_connector import IndexConnector
 import os
+import re
 import ijson
 
 conn = IndexConnector("localhost", "9200", "args")
-if conn.count()['count']>0:
+if conn.count()['count'] > 0:
     print("The index is not empty")
     choice = input("Continue indexing? [y/N]")
     if choice not in 'yY':
@@ -13,18 +14,19 @@ if conn.count()['count']>0:
 dir = __file__[:__file__.index('Hua-Mulan')]
 dir = f"{dir}Hua-Mulan/data/"
 files = os.listdir(dir)
-files.remove(".gitkeep")
+files = [file for file in files if 'lock' not in file and 'keep' not in file]
 
-assert len(files)>0, f"Found no files to index in {dir}"
+assert len(files) > 0, f"Found no files to index in {dir}"
 
-#iterate over each file in directory
+# iterate over each file in directory
 for file in files:
+
     # generate auxiliary structures
     doc = {}
     prem = []
     arg = {}
     # read json as stream and catch each relevant key and create argument
-    with open(dir+file) as jsonfile:
+    with open(dir + file) as jsonfile:
         for prefix, type_of_object, value in ijson.parse(jsonfile):
             if prefix == "arguments.item.id":
                 doc.update({"id": value})
@@ -43,5 +45,6 @@ for file in files:
             if prefix == "arguments.item.context.sourceUrl":
                 doc.update({"souceURL": value})
                 conn.add_document(doc)
+
                 doc = {}
                 prem = []
