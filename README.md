@@ -37,6 +37,23 @@ Index the data with:
 $ python indexing/index.py
 ```
 
+NEW: 
+For Indexing with DirichletLM, please create corresponding index with following request body:
+
+```
+ 		{
+            "settings": {
+                "index": {
+                    "similarity": {
+                        "lm-dirichlet": {
+                            "type": similarity
+                        }
+                    }
+                }
+            }
+        }
+```
+
 
 ## Simple querying
 

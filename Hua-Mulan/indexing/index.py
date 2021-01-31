@@ -3,8 +3,12 @@ import os
 import re
 import ijson
 
-conn = IndexConnector("localhost", "9200", "args")
-if conn.count()['count'] > 0:
+index = "args-lm-dirichlet"
+
+
+conn = IndexConnector(index)
+
+if conn.count() > 0:
     print("The index is not empty")
     choice = input("Continue indexing? [y/N]")
     if choice not in 'yY':
