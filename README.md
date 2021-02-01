@@ -41,13 +41,13 @@ NEW:
 For Indexing with DirichletLM, please create corresponding index with following shell put
 
 ```
- 		curl -X PUT "localhost:9200/args-lm-dirichlet?pretty" -H 'Content-Type: application/json' -d'
+curl -X PUT "localhost:9200/args-lm-dirichlet?pretty" -H 'Content-Type: application/json' -d'
 {
             "settings": {
                 "index": {
                     "similarity": {
                         "lm-dirichlet": {
-                            "type": LMDirichlet
+                            "type": "LMDirichlet"
                         }
                     }
                 }
