@@ -3,12 +3,33 @@ from elasticsearch import Elasticsearch, helpers
 
 class IndexConnector:
 
-    def __init__(self, host, port, index):
-        self.es = Elasticsearch([{'host': host, 'port': port, 'index': index}], timeout=30)
+    def __init__(self, index):
+        self.es = Elasticsearch([{'host': "localhost", 'port': "9200", 'index': index}])
         self.index = index
 
     def count(self):
-        return self.es.count()
+        return int(self.es.cat.count(self.index, params={"format": "json"})[0].get("count"))
+
+    @classmethod
+    def update(cls, index):
+        cls.es = Elasticsearch([{'host': "localhost", 'port': "9200", 'index': index}])
+
+    def create_index(self, index, similarity):
+        request_body = {
+            "settings": {
+                "index": {
+                    "similarity": {
+                        "lm-dirichlet": {
+                            "type": similarity
+                        }
+                    }
+                }
+            }
+        }
+        print("creating 'example_index' index...")
+        self.es.indices.create(index=index, body=request_body)
+        self.update(index)
+
 
     def add_document(self, doc):
         res = self.es.index(index=self.index, body=doc)
