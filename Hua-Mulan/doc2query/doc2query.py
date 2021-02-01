@@ -9,8 +9,9 @@ model = T5ForConditionalGeneration.from_pretrained(
     'doc2query/model.ckpt-1004000', from_tf=True, config=config)
 
 model.to(device)
-
-doc_text = 'The presence of communication amid scientific minds was equally important to the success of the Manhattan Project as scientific intellect was. The only cloud hanging over the impressive achievement of the atomic researchers and engineers is what their success truly meant; hundreds of thousands of innocent lives obliterated. </s>'
+#TODO:
+#Finde einen Weg den Index in elasticseach_data anzusprechen.
+doc_text = 'schalke </s>'
 
 input_ids = tokenizer.encode(doc_text, return_tensors='pt').to(device)
 outputs = model.generate(

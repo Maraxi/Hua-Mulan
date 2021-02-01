@@ -43,7 +43,7 @@ for file in files:
                 doc.update({"discussionTitle": value})
             # last relevant key is sourceURL, afterwards reset auxiliary structures and send doc to es
             if prefix == "arguments.item.context.sourceUrl":
-                doc.update({"souceURL": value})
+                doc.update({"sourceURL": value})
                 conn.add_document(doc)
 
                 doc = {}
