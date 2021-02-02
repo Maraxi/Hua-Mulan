@@ -4,8 +4,11 @@ RUN apt update
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip && \
     python3 -m pip install --no-cache-dir \
-    transformers 
+    transformers
+RUN python3 -m pip install flask
+
+RUN python3 -m pip install SentencePiece
 
 RUN conda install tensorflow
 
-CMD python doc2query/doc2query.py
+CMD python doc2query/appdoc2query.py
