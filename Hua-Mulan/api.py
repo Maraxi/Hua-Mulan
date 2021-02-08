@@ -3,7 +3,7 @@ from flask import request, jsonify
 from indexing.index_connector import IndexConnector
 from retrieval.ranker import rank
 
-dataConn = IndexConnector("localhost", "9200", "args")
+dataConn = IndexConnector("args")
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
