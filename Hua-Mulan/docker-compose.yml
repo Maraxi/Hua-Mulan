@@ -11,21 +11,23 @@ services:
                         - "9200:9200"
                 volumes:
                         - type: bind
-                          source: ../elasticsearch_data
+                          source: ./indexing/elasticsearch_data
                           target: /usr/share/elasticsearch/data
                 environment:
                         - discovery.type=single-node
                 healthcheck:
                         test: ["CMD", "curl", "-s", "-f", "http://localhost:9200/_cat/health"]
- 
-        doc2query:
-                build: ./doc2query/
-                container_name: doc2query
-                networks: ["tira"]
-                ports:
-                        - "5000:5000"
-                volumes:
-                      - .:/workspace
+        index:
+          build: .
+          container_name: index
+          networks: ["tira"]
+          volumes:
+                  - .:/pred
+          healthcheck:
+            test: [ "CMD", "curl", "-f", "http://elastic:9200" ]
+            interval: 30s
+            timeout: 10s
+            retries: 5
 
 networks:
         tira:
