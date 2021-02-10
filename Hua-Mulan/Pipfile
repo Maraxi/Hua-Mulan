@@ -9,6 +9,7 @@ elasticsearch = "*"
 ijson = "*"
 flask = "*"
 pandas = "*"
+sklearn.metrics = "*"
 
 [dev-packages]
 
