@@ -44,25 +44,5 @@ class Evaluator:
         return self.dcg(scores)/self.idcg(query[0]['nr'], len(scores))
 
 
-dir = __file__[:__file__.index('Hua-Mulan')]
-
-# This part is analogue to evaluate.py
-tree = ET.parse(f'{dir}/Hua-Mulan/Hua-Mulan/evaluation/topics.xml')
-root = tree.getroot()
-
-result = {}
-for elem in root:
-    r = requests.get('http://127.0.0.1:5000/api/query?arg=' + elem[1].text)
-    json_data = json.loads(r.text)
-    result[elem[0].text] = []
-    for arg in json_data:
-        result[elem[0].text].append({"query": elem[1].text,
-                                     "nr": elem[0].text,
-                                     "arg_id": arg["_source"]["id"],
-                                     "score": arg["_score"]})
-
-evaluator = Evaluator()
-for doc in result.values():
-    print(doc[0]['nr'], evaluator.ndcg(doc))
 
 

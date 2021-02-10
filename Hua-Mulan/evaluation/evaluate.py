@@ -1,8 +1,10 @@
 import xml.etree.ElementTree as ET
 import requests
 import json
+from ndcg import Evaluator
 
-tree = ET.parse('topics.xml')
+dir = __file__[:__file__.index('Hua-Mulan')]
+tree = ET.parse(f'{dir}/Hua-Mulan/Hua-Mulan/evaluation/topics.xml')
 root = tree.getroot()
 
 result = []
@@ -15,4 +17,6 @@ for elem in root:
                            "arg_id": arg["_source"]["id"],
                            "score": arg["_score"]})
 
-print(result)
+evaluator = Evaluator()
+for doc in result.values():
+    print(doc[0]['nr'], evaluator.ndcg(doc))
