@@ -2,20 +2,48 @@ import xml.etree.ElementTree as ET
 import requests
 import json
 from ndcg import Evaluator
+import os
+import time
 
-dir = __file__[:__file__.index('Hua-Mulan')]
-tree = ET.parse(f'{dir}/Hua-Mulan/Hua-Mulan/evaluation/topics.xml')
+dir = os.path.dirname(os.path.realpath(__file__))
+print(dir)
+tree = ET.parse(f'{dir}/topics.xml')
 root = tree.getroot()
 
-result = []
+host = "http://searchengine"
+
+index = ["args_t5expansion"]
+
+connected = False
+
+while not connected:
+    try:
+        for ind in index:
+            count = requests.request("GET", "http://elastic" + ":9200/" + ind + "/_count?")
+            print(count.text, flush=True)
+
+            if json.loads(count.text)["count"] != 382545:
+                raise Exception
+
+        print("Evaluation starting...", flush=True)
+        connected = True
+    except Exception:
+        connected = False
+        print("Evaluation is waiting for searchengine ...", flush=True)
+        time.sleep(20)
+
+
+
+result = {}
 for elem in root:
-        r = requests.get('http://127.0.0.1:5000/api/query?arg=' + elem[1].text)
-        json_data = json.loads(r.text)
-        for arg in json_data:
-            result.append({"query": elem[1].text,
-                           "nr": elem[0].text,
-                           "arg_id": arg["_source"]["id"],
-                           "score": arg["_score"]})
+    r = requests.get(host + ":5000/api/query?arg=" + elem[1].text + "&index=" + index[0])
+    json_data = json.loads(r.text)
+    result[elem[0].text] = []
+    for arg in json_data:
+        result[elem[0].text].append({"query": elem[1].text,
+                                     "nr": elem[0].text,
+                                     "arg_id": arg["_id"],
+                                     "score": arg["_score"]})
 
 evaluator = Evaluator()
 for doc in result.values():

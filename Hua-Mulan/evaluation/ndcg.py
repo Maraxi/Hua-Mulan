@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 import requests
-import json
+import os
 import math
 
 # Evaluate our setup with nDCG marker
@@ -8,8 +8,8 @@ class Evaluator:
 
     # Init with reference data
     def __init__(self):
-        dir = __file__[:__file__.index('Hua-Mulan')]
-        with open(f'{dir}/Hua-Mulan/data/touche2020-task1-relevance-args-me-corpus-version-2020-04-01.qrels') as reference:
+        dir = os.path.dirname(os.path.realpath(__file__))
+        with open(f'{dir}/relevance_judgements.qrels') as reference:
             data = reference.read()
             data = data.splitlines()
             self.data = [line.split() for line in data]

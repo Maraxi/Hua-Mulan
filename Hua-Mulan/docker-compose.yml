@@ -31,5 +31,13 @@ services:
             timeout: 10s
             retries: 5
 
+        evaluation:
+          build: ./deploy/evaluation
+          container_name: evaluation
+          networks: [ "tira" ]
+          volumes:
+            - .:/pred
+
+
 networks:
         tira:
