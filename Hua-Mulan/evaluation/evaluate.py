@@ -10,18 +10,16 @@ print(dir)
 tree = ET.parse(f'{dir}/topics.xml')
 root = tree.getroot()
 
+index = "args_t5expansion"
 host = "http://searchengine"
 
 index = ["args_t5expansion"]
 
 connected = False
-
 while not connected:
     try:
         for ind in index:
             count = requests.request("GET", "http://elastic" + ":9200/" + ind + "/_count?")
-            print(count.text, flush=True)
-
             if json.loads(count.text)["count"] != 382545:
                 raise Exception
 

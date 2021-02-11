@@ -1,4 +1,4 @@
-from indexing.index_connector import IndexConnector
+from index_connector import IndexConnector
 import pandas as pd
 import time
 
