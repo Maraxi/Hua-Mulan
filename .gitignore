@@ -1,4 +1,5 @@
 **/data/*.json
+**/data/*.csv
 **/elasticsearch_data/nodes
 **/__pycache__
 **/.idea
