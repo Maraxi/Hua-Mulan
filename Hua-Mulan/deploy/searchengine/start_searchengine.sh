@@ -1,4 +1,5 @@
 #!/bin/bash
 
-exec python /pred/indexing/index.py &
-exec python /pred/searchengine.py
+cd /pred/
+exec python indexing/index.py &
+exec python searchengine.py

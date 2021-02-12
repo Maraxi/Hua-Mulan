@@ -19,7 +19,6 @@ def home():
 
 @app.route('/api/query', methods=['GET'])
 def api_arg():
-
     if 'arg' in request.args and 'index' in request.args:
         print(request.args["index"], flush=True)
         result = conn.query_index(request.args["arg"], 10, request.args["index"])
