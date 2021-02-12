@@ -19,7 +19,7 @@ connected = False
 while not connected:
     try:
         for ind in index:
-            count = requests.request("GET", "http://elastic" + ":9200/" + ind + "/_count?")
+            count = requests.request("GET", f"http://elastic:9200/{ind}/_count?")
             if json.loads(count.text)["count"] != 382545:
                 raise Exception
 
