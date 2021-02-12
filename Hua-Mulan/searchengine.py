@@ -3,13 +3,11 @@ from flask import request, jsonify
 from indexing.index_connector import IndexConnector
 import sys
 import time
-from retrieval.ranker import rank
 
 
 conn = IndexConnector()
 
 app = flask.Flask(__name__)
-
 app.config["DEBUG"] = True
 
 print("Searchengine can be contacted on Port 5000")
