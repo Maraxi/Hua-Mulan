@@ -31,7 +31,7 @@ def gen():
 idfVectorizer = TfidfVectorizer(strip_accents='ascii', max_df=0.85, min_df=0.05, binary=True, use_idf=True)
 idfVectorizer.fit(gen())
 
-with open(f'{dir}idf.pickle', 'wb') as output:
+with open(f'idf.pickle', 'wb') as output:
     pickle.dump(idfVectorizer.idf_, output)
-with open(f'{dir}vocabulary.pickle', 'wb') as output:
+with open(f'vocabulary.pickle', 'wb') as output:
     pickle.dump(idfVectorizer.vocabulary_, output)
