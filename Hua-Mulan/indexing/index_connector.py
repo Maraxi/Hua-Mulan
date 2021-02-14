@@ -6,7 +6,8 @@ host = "elastic"
 
 class IndexConnector:
 
-    def __init__(self):
+    def __init__(self, host_name="elastic"):
+        host = host_name
         connection = False
         while not connection:
             try:

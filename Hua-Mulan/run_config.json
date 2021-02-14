@@ -1,0 +1,4 @@
+{
+	"elastic_host_container_name": "elastic",
+	"index_name": "args_t5expansion"
+}

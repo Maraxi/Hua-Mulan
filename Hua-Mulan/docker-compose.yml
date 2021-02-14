@@ -17,26 +17,29 @@ services:
                         - discovery.type=single-node
                 healthcheck:
                         test: ["CMD", "curl", "-s", "-f", "http://localhost:9200/_cat/health"]
-        searchengine:
-          build: ./deploy/searchengine
-          container_name: searchengine
-          networks: ["tira"]
-          volumes:
-                  - .:/pred
-          ports:
-                  - "5000:5000"
-          healthcheck:
-            test: [ "CMD", "curl", "-f", "http://searchengine:5000" ]
-            interval: 30s
-            timeout: 10s
-            retries: 5
-
-        evaluation:
-          build: ./deploy/evaluation
-          container_name: evaluation
-          networks: [ "tira" ]
-          volumes:
-            - .:/pred
+        python:
+                build: ./deploy/python
+                container_name: python
+                restart: always
+                networks: ["tira"]
+                ports:
+                        - "8888:8888"
+                environment:
+                        - GRANT_SUDO=yes
+                user: root
+                volumes:
+                        - type: bind
+                          source: .
+                          target: /root
+                        - type: bind
+                          source: ../data
+                          target: /media
+                        - type: bind
+                          source: /tmp
+                          target: /tmp
+                depends_on:
+                        - elastic
+                working_dir: /root
 
 
 networks:
