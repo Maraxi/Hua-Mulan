@@ -1,8 +1,10 @@
 import flask
 from flask import request, jsonify
 from indexing.index_connector import IndexConnector
+from query_expansion.query_expansion import Expander
 import sys
 import time
+import json
 
 
 conn = IndexConnector()
@@ -26,5 +28,13 @@ def api_arg():
     else:
         return "Error, invalid request"
 
+@app.route('/api/expand', methods=['GET'])
+def api_expand():
+    if 'arg' in request.args and 'index' in request.args and 'terms' in request.args:
+        result = conn.query_index(request.args["arg"], 40, request.args["index"])
+        e = Expander(request.args["arg"], result['hits']['hits'])
+        return json.dumps(e.rank_searchterms(int(request.args['terms'])))
+    else:
+        return "Error, invalid request"
 
 app.run(port=5000, debug=True, host='0.0.0.0')

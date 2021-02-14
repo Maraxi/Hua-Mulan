@@ -49,11 +49,10 @@ def evaluate():
 
 def expand_query():
     for elem in root:
-        print(f"{host}:5000/api/expand?arg={elem[1].text}&index={index[0]}&terms=10")
+        print(f"{elem[1].text}")
         r = requests.get(f"{host}:5000/api/expand?arg={elem[1].text}&index={index[0]}&terms=10")
         print(r.text)
-        break
 
 connect()
 evaluate()
-#expand_query()
+expand_query()
