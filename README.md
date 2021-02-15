@@ -67,6 +67,10 @@ For simple querying create an instance of class `IndexConnector` and call method
 - While the docker container is running. You can obtain a query corresponding to a string by sending it to localholst:5000/api/doc2query?arg=SOMESTRING
 
 ## Runing code inside docker
+Check if the container is running and healthy by inspecting the output of
+```
+docker ps
+```
 We can connect to a container or run code inside by executing
 ```
 docker exec (containername) (command with additional arguments)
