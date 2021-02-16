@@ -26,7 +26,7 @@ if __name__ == "__main__":
     args = vars(args)
 
     # GIVE THE CONTAINERS TIME TO REACH A STEADY STATE
-    sleep(60)
+    sleep(2)
 
     # CONNECT TO ELASTICSEARCH NODE
     container_name = config['elastic_host_container_name']
@@ -39,12 +39,13 @@ if __name__ == "__main__":
     input_dir = args['input_dir']
     output_dir = args['output_dir']
     index = args['doc_expansion']
-    queryexpansion = ['query_expansion']
+    queryexpansion = args['query_expansion']
 
     # MAKE SURE THE OUTPUT DIRECTORY EXISTS
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-
+    print(index, flush=True)
+    print(queryexpansion, flush=True)
     # LOAD THE TOPICS FROM THE INPUT DIRECTORY
     print("LOADING TOPICS")
     tree = ET.parse(os.path.join(input_dir, 'topics.xml'))
