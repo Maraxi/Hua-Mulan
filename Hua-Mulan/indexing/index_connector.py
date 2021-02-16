@@ -49,8 +49,7 @@ class IndexConnector:
                     'premises': {'type': 'text', 'similarity': 'lmdirichlet',
                                  'fields': {'kw': {'type': 'keyword', 'normalizer': 'norm', 'ignore_above': 32766}}},
                     'stance': {'type': 'keyword'},
-                    'conclusion': {'type': 'text'},
-                    'context.sourceUrl': {'type': 'keyword'}
+                    'conclusion': {'type': 'text'}
                 }
             }
         }
@@ -75,8 +74,7 @@ class IndexConnector:
                 "_source": {
                     'premises': row["premises"],
                     'stance': row["stance"],
-                    'conclusion': row["conclusion"],
-                    'context.sourceUrl': row["context.sourceUrl"]
+                    'conclusion': row["conclusion"]
 
                 }
             }
@@ -92,7 +90,7 @@ class IndexConnector:
         res = self.es.search(index=indexname,
                              body={"size": size,
                                    "query":
-                                       {"query_string":
-                                            {"query": querystring
+                                       {"match":
+                                            {"premises": querystring
                                              }}})
         return res

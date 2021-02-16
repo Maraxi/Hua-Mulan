@@ -10,4 +10,4 @@ RUN pip install --upgrade pip && \
 
 RUN chmod +x /start/start_searchengine.sh
 
-CMD sh ./start/start_searchengine.sh
+CMD python pred/index.py

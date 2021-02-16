@@ -40,6 +40,12 @@ services:
                 depends_on:
                         - elastic
                 working_dir: /root
+        searchengine:
+          build: ./deploy/indexing
+          container_name: indexing
+          networks: [ "tira" ]
+          volumes:
+            - .:/pred
 
 
 networks:
