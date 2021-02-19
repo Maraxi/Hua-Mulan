@@ -56,6 +56,12 @@ curl -X PUT "localhost:9200/args-lm-dirichlet?pretty" -H 'Content-Type: applicat
 '
 ```
 
+## Query Expansion
+
+### Creating idf and vocabulary
+
+Make sure that `args_expanded.tsv` is in `Hua-Mulan/indexing/`
+Run `docker exec python python query_expansion/generate_idf.py`
 
 ## Simple querying
 

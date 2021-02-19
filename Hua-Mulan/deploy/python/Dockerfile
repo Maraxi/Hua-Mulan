@@ -1,6 +1,6 @@
 FROM jupyter/base-notebook:latest
 
-RUN pip install pandas elasticsearch elasticsearch_dsl torch transformers 
+RUN pip install pandas elasticsearch elasticsearch_dsl torch transformers scikit-learn
 
 EXPOSE 8888
 
