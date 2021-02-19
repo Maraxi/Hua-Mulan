@@ -6,7 +6,8 @@ import xml.etree.ElementTree as ET
 import numpy as np
 import json
 from indexing.index_connector import IndexConnector
-from time import sleep
+from time import sleep, time
+import ranking.ranking as ranking
 
 if __name__ == "__main__":
     print('Starting Tira run script')
@@ -68,6 +69,8 @@ if __name__ == "__main__":
         # query
         response = conn.query_index(query, 1000, index)['hits']['hits']
 
+        # apply bert reranking
+        response = ranking.rank(response, query)
         # STORE RESULTS IN DICTIONARY
         results = dict()
         for hit in response:

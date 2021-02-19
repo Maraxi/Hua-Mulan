@@ -1,6 +1,6 @@
 FROM jupyter/base-notebook:latest
 
-RUN pip install pandas elasticsearch elasticsearch_dsl
+RUN pip install pandas elasticsearch elasticsearch_dsl torch transformers 
 
 EXPOSE 8888
 

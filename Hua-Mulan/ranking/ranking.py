@@ -1,5 +1,6 @@
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import time
 
 tokenizer = AutoTokenizer.from_pretrained("amberoad/bert-multilingual-passage-reranking-msmarco")
 model = AutoModelForSequenceClassification.from_pretrained("amberoad/bert-multilingual-passage-reranking-msmarco")
@@ -23,3 +24,18 @@ def createQueryArgumentScore(query, argument):
     outputscore = consensus[0][1].item()
 
     return outputscore
+
+def new_arg(argument, query):
+    start = time.time()
+    arg = argument["_source"]["premises"] + argument["_source"]["conclusion"]
+    argument["_score"] = createQueryArgumentScore(query, arg)
+    stop = time.time()
+    return argument
+
+def rank(arguments, query):
+    print("applying Bert reranking")
+    results = [new_arg(argument, query) for argument in arguments]
+
+    return results
+
+
