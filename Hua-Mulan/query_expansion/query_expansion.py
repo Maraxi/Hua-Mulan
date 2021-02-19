@@ -6,17 +6,18 @@ import json
 import math
 
 class Expander:
-    def __init__(self, query, relevant):
+    def __init__(self, query, relevant, index='args_original'):
         self.query = query
         self.relevant = relevant
         self.relevant = [entry['_source'] for entry in self.relevant]
         self.relevant = [" ".join(entry.values()) for entry in self.relevant]
+        self.index = index
         self.load_pickle()
 
     def load_pickle(self):
-        with open('query_expansion/idf.pickle', 'rb') as idf:
+        with open(f'query_expansion/{self.index}_idf.pickle', 'rb') as idf:
             self.idf = pickle.load(idf)
-        with open('query_expansion/vocabulary.pickle', 'rb') as vocab:
+        with open(f'query_expansion/{self.index}_vocabulary.pickle', 'rb') as vocab:
             self.vocab = pickle.load(vocab)
 
     def rank_searchterms(self, count=5):
@@ -34,6 +35,6 @@ class Expander:
         scores = results * self.idf
         scored_words = [(scores[index], word) for word, index in self.vocab.items()]
         scored_words.sort(reverse=True)
-        print(scored_words[:count], flush=True)
+        #print(scored_words[:count], flush=True)
         return [word for _,word in scored_words[:count]]
 

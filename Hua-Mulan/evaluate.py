@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import numpy as np
 import json
 from indexing.index_connector import IndexConnector
+from query_expansion.query_expansion import Expander
 from time import sleep, time
 import ranking.ranking as ranking
 
@@ -41,6 +42,12 @@ if __name__ == "__main__":
     output_dir = args['output_dir']
     index = args['doc_expansion']
     queryexpansion = args['query_expansion']
+    if queryexpansion is not None:
+        try:
+            queryexpansion = int(queryexpansion)
+        except:
+            print("query expansion muss be an integer")
+            exit()
 
     # MAKE SURE THE OUTPUT DIRECTORY EXISTS
     if not os.path.exists(output_dir):
@@ -64,8 +71,10 @@ if __name__ == "__main__":
 
         print(f'Now working on query {number}: {query}')
         if queryexpansion != "None":
-            # add expansion to query here
-            print("no method implemented")
+            response = conn.query_index(query, 1000, index)['hits']['hits']
+            expander = Expander(query, response, index)
+            extra = " ".join(expander.rank_searchterms(queryexpansion))
+            query = f'{query} {extra}'
         # query
         response = conn.query_index(query, 1000, index)['hits']['hits']
 
