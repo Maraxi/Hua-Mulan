@@ -9,11 +9,9 @@ def removequotes(input):
     output = input.replace("'", "")
     return output.replace('"', '')
 
-def createQueryArgumentScore(query, argument):
-    queryClean = removequotes(query)
-    argumentClean = removequotes(argument)
+def createQueryArgumentScore(argumentlist):
     pt_batch = tokenizer(
-        [[queryClean, argumentClean]],
+        argumentlist,
         padding=True,
         truncation=True,
         max_length=512,
@@ -21,7 +19,7 @@ def createQueryArgumentScore(query, argument):
     )
     output = model(**pt_batch)
     consensus = F.softmax(output[0], dim=-1)
-    outputscore = consensus[0][1].item()
+    outputscore = [consensus[0][1].item() for element in consensus]
 
     return outputscore
 
@@ -32,10 +30,28 @@ def new_arg(argument, query):
     stop = time.time()
     return argument
 
-def rank(arguments, query):
+def concatargument(argument, score):
+    argument["_score"] = score
+    return argument
+
+def rank(arguments, query, batchsize):
     print("applying Bert reranking")
-    results = [new_arg(argument, query) for argument in arguments]
+    query = removequotes(query)
+    argumentlist = []
+    results = []
+    for arg in arguments:
+        element = []
+        element.append(query)
+        element.append(removequotes(arg["_source"]["premises"] + arg["_source"]["conclusion"]))
+        argumentlist.append(element)
 
-    return results
+    runs = int(len(argumentlist) / batchsize)
+    if (len(argumentlist) % batchsize != 0):
+        runs = runs +1
+    for x in range(runs):
+        results = results + createQueryArgumentScore(argumentlist[x * batchsize : (x+1) * batchsize])
+    r = [concatargument(arguments[i], results[i]) for i in range(len(arguments))]
 
+
+    return r
 
