@@ -4,7 +4,7 @@ import time
 
 time.sleep(30)
 
-indices = ["args_original","args_t5expansion", "args_gpt2expansion", "args_naiveexpansion", "args_original","args_t5expansion_bm25", "args_gpt2expansion_bm25", "args_naiveexpansion_bm25"]
+indices = ["args_original","args_t5expansion", "args_gpt2expansion", "args_naiveexpansion", "args_original_bm25","args_t5expansion_bm25", "args_gpt2expansion_bm25", "args_naiveexpansion_bm25"]
 file = "pred/indexing/args_expanded.tsv"
 
 
