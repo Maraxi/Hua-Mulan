@@ -32,27 +32,48 @@ class IndexConnector:
     def update(cls, index):
         cls.es = Elasticsearch([{'host': host, 'port': "9200", 'index': index}])
 
-    def create_index(self, index):
-        request_body = {
-            'settings': {
-                'similarity': {
-                    'lmdirichlet': {'type': 'LMDirichlet'}
+    def create_index(self, index, sim):
+        if sim == "lmdirichlet":
+            request_body = {
+                'settings': {
+                    'similarity': {
+                        'lmdirichlet': {'type': 'LMDirichlet', 'mu': 2148}
+                    },
+                    'analysis': {
+                        'normalizer': {
+                            'norm': {'type': 'custom', 'filter': ['lowercase', 'asciifolding']}
+                        }
+                    }
                 },
-                'analysis': {
-                    'normalizer': {
-                        'norm': {'type': 'custom', 'filter': ['lowercase', 'asciifolding']}
+                'mappings': {
+                    'properties': {
+                        'premises': {'type': 'text', 'similarity': 'lmdirichlet',
+                                     'fields': {'kw': {'type': 'keyword', 'normalizer': 'norm', 'ignore_above': 32766}}},
+                        'stance': {'type': 'keyword'},
+                        'conclusion': {'type': 'text'}
                     }
                 }
-            },
-            'mappings': {
-                'properties': {
-                    'premises': {'type': 'text', 'similarity': 'lmdirichlet',
-                                 'fields': {'kw': {'type': 'keyword', 'normalizer': 'norm', 'ignore_above': 32766}}},
-                    'stance': {'type': 'keyword'},
-                    'conclusion': {'type': 'text'}
+            }
+        else:
+            request_body = {
+                'settings': {
+                    'analysis': {
+                        'normalizer': {
+                            'norm': {'type': 'custom', 'filter': ['lowercase', 'asciifolding']}
+                        }
+                    }
+                },
+                'mappings': {
+                    'properties': {
+                        'premises': {'type': 'text',
+                                     'fields': {
+                                         'kw': {'type': 'keyword', 'normalizer': 'norm', 'ignore_above': 32766}}},
+                        'stance': {'type': 'keyword'},
+                        'conclusion': {'type': 'text'}
+                    }
                 }
             }
-        }
+
         print("creating " + index + " index...")
         self.es.indices.create(index=index, body=request_body)
         self.update(index)
