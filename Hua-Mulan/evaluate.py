@@ -6,6 +6,8 @@ import xml.etree.ElementTree as ET
 import numpy as np
 import json
 import requests
+from query_expansion.query_expansion import Expander
+
 from indexing.index_connector import IndexConnector
 from time import sleep, time
 #import ranking.ranking as ranking
@@ -47,6 +49,13 @@ if __name__ == "__main__":
     name = args['name']
     queryexpansion = args['query_expansion']
 
+    if queryexpansion is not None:
+        try:
+            queryexpansion = int(queryexpansion)
+        except:
+            print("query expansion muss be an integer")
+            exit()
+
     # MAKE SURE THE OUTPUT DIRECTORY EXISTS
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -69,13 +78,15 @@ if __name__ == "__main__":
 
         print(f'Now working on query {number}: {query}')
         if queryexpansion != "None":
-            # add expansion to query here
-            print("no method implemented")
+            response = conn.query_index(query, 1000, index)['hits']['hits']
+            expander = Expander(query, response, index)
+            extra = " ".join(expander.rank_searchterms(queryexpansion))
+            query = f'{query} {extra}'
         # query
         response = conn.query_index(query, 1000, index)['hits']['hits']
 
         # apply bert reranking
-        if ranking ==1:
+        if ranking == 1:
             response = requests.post('http://localhost:5000/api/ranking', json=response)
 
         #response = ranking.rank(response, query, 15)
