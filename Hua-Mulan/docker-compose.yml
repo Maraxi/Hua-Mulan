@@ -32,7 +32,7 @@ services:
                           source: .
                           target: /root
                         - type: bind
-                          source: ../data
+                          source: /media
                           target: /media
                         - type: bind
                           source: /tmp
