@@ -3,3 +3,4 @@
 **/elasticsearch_data/nodes
 **/__pycache__
 **/.idea
+**/args_expanded.*
