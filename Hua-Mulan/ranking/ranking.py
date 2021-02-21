@@ -1,9 +1,16 @@
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import time
+from flask import Flask, request
+import torch
 
+print(torch.cuda.is_available(), flush=True)
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+
+app = Flask(__name__)
 tokenizer = AutoTokenizer.from_pretrained("amberoad/bert-multilingual-passage-reranking-msmarco")
-model = AutoModelForSequenceClassification.from_pretrained("amberoad/bert-multilingual-passage-reranking-msmarco")
+model = AutoModelForSequenceClassification.from_pretrained("amberoad/bert-multilingual-passage-reranking-msmarco").to(device)
 
 def removequotes(input):
     output = input.replace("'", "")
@@ -16,8 +23,10 @@ def createQueryArgumentScore(argumentlist):
         truncation=True,
         max_length=512,
         return_tensors="pt"
-    )
+    ).to(device)
+
     output = model(**pt_batch)
+    torch.cuda.empty_cache()
     consensus = F.softmax(output[0], dim=-1)
     outputscore = [consensus[0][1].item() for element in consensus]
 
@@ -55,3 +64,17 @@ def rank(arguments, query, batchsize):
 
     return r
 
+
+
+
+@app.route("/api/ranking", methods = ['POST'])
+def hello():
+    args = request.get_json()
+    print(len(args), flush=True)
+    start = time.time()
+    dat = rank(args, "Should Teachers Get Tenured?", len(args))
+    stop = time.time()
+    print(stop-start, flush=True)
+    return "Hello World"
+
+app.run(port=5000, debug=True, host='0.0.0.0')
