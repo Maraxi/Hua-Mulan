@@ -78,8 +78,8 @@ if __name__ == "__main__":
 
         print(f'Now working on query {number}: {query}')
         if queryexpansion != "None":
-            response = conn.query_index(query, 1000, index)['hits']['hits']
-            expander = Expander(query, response, index)
+            response = conn.query_index(query, 1000, index.replace("_bm25", ""))['hits']['hits']
+            expander = Expander(query, response, index.replace("_bm25", ""))
             extra = " ".join(expander.rank_searchterms(queryexpansion))
             query = f'{query} {extra}'
         # query
@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
         # apply bert reranking
         if ranking == 1:
-            response = requests.post('http://localhost:5000/api/ranking', json=response)
+            response = requests.post('http://localhost:5000/api/ranking', json={"args":response, "query": query})
 
         #response = ranking.rank(response, query, 15)
         # STORE RESULTS IN DICTIONARY

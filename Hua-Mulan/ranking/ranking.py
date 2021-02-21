@@ -69,12 +69,14 @@ def rank(arguments, query, batchsize):
 
 @app.route("/api/ranking", methods = ['POST'])
 def hello():
-    args = request.get_json()
+    data = request.get_json()
+    args = data["args"]
+    query = data["query"]
     print(len(args), flush=True)
     start = time.time()
-    dat = rank(args, "Should Teachers Get Tenured?", 2)
+    dat = rank(args, query, 2)
     stop = time.time()
     print(stop-start, flush=True)
-    return "Hello World"
+    return dat
 
 app.run(port=5000, debug=True, host='0.0.0.0')
