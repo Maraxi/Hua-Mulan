@@ -5,6 +5,7 @@ import argparse
 import xml.etree.ElementTree as ET
 import numpy as np
 import json
+import requests
 from indexing.index_connector import IndexConnector
 from time import sleep, time
 #import ranking.ranking as ranking
@@ -23,6 +24,8 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output-dir")
     parser.add_argument("-qe", "--query-expansion")
     parser.add_argument("-de", "--doc-expansion")
+    parser.add_argument("-r", "--ranking")
+    parser.add_argument("-n", "--name")
     args = parser.parse_args()
     args = vars(args)
 
@@ -40,6 +43,8 @@ if __name__ == "__main__":
     input_dir = args['input_dir']
     output_dir = args['output_dir']
     index = args['doc_expansion']
+    ranking = args['ranking']
+    name = args['name']
     queryexpansion = args['query_expansion']
 
     # MAKE SURE THE OUTPUT DIRECTORY EXISTS
@@ -68,11 +73,12 @@ if __name__ == "__main__":
             print("no method implemented")
         # query
         response = conn.query_index(query, 1000, index)['hits']['hits']
-        print(response[0])
 
         # apply bert reranking
+        if ranking ==1:
+            response = requests.post('http://localhost:5000/api/ranking', json=response)
+
         #response = ranking.rank(response, query, 15)
-        print(response[0])
         # STORE RESULTS IN DICTIONARY
         results = dict()
         for hit in response:

@@ -72,7 +72,7 @@ def hello():
     args = request.get_json()
     print(len(args), flush=True)
     start = time.time()
-    dat = rank(args, "Should Teachers Get Tenured?", len(args))
+    dat = rank(args, "Should Teachers Get Tenured?", 2)
     stop = time.time()
     print(stop-start, flush=True)
     return "Hello World"
