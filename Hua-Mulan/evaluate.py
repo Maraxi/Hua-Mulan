@@ -93,7 +93,7 @@ if __name__ == "__main__":
         final_ranks['topic_number'] = number
 
         # APPEND CURRENT DATAFRAME TO OUTPUT FILE
-        with open(f'{output_dir}/run.txt', 'a+') as f:
+        with open(f'{output_dir}/{name}.txt', 'a+') as f:
             final_ranks[['topic_number', 'Q0', 'arg_ids', 'rank', 'score', 'method']].to_csv(f, sep=' ', header=False,
                                                                                              index=False)
 
