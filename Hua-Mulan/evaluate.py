@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
         # query
         response = conn.query_index(query, 1000, index)['hits']['hits']
-        
+
 
         # apply bert reranking
         response = ranking.rank(response, query, 15)

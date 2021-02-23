@@ -19,7 +19,8 @@ def createQueryArgumentScore(argumentlist):
     )
     output = model(**pt_batch)
     consensus = F.softmax(output[0], dim=-1)
-    outputscore = [consensus[0][1].item() for element in consensus]
+    outputscore = [consensus[i][0].item() for i in range(len(consensus))]
+
 
     return outputscore
 
