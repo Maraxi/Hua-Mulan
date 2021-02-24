@@ -17,13 +17,13 @@ class IndexConnector:
                 connection = False
 
         self.es = Elasticsearch([{'host': host, 'port': "9200"}])
-        print(self.es.ping())
-        print("connection established!")
+        if self.es.ping():
+            print("connection established!")
+        else:
+            print("connection failure")
 
     def ping(self):
-        if self.es.ping():
-            return True
-        return False
+        return self.es.ping()
 
     def count(self, index):
         return int(self.es.cat.count(index, params={"format": "json"})[0].get("count"))

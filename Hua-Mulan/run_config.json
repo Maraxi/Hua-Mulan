@@ -1,4 +1,5 @@
 {
 	"elastic_host_container_name": "elastic",
-	"index_name": "args_t5expansion"
+	"index_name": "args_t5expansion",
+	"indices": ["args_original","args_t5expansion", "args_gpt2expansion", "args_naiveexpansion", "args_original_bm25","args_t5expansion_bm25", "args_gpt2expansion_bm25", "args_naiveexpansion_bm25"]
 }
