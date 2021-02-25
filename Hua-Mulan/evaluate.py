@@ -8,7 +8,6 @@ import json
 from indexing.index_connector import IndexConnector
 from query_expansion.query_expansion import Expander
 from time import sleep, time
-import ranking.ranking as ranking
 
 if __name__ == "__main__":
     print('Starting Tira run script')
@@ -36,7 +35,7 @@ if __name__ == "__main__":
     bert = args['bert_ranking']
 
     # GIVE THE CONTAINERS TIME TO REACH A STEADY STATE
-    sleep(2)
+    sleep(180)
 
     # CONNECT TO ELASTICSEARCH NODE
     container_name = config['elastic_host_container_name']
@@ -60,45 +59,45 @@ if __name__ == "__main__":
     topics = pd.DataFrame(topics)
 
     # ITERATE THROUGH TOPICS AND EXECUTE SEARCH
-    for _, row in topics.iterrows():
-        number = row['topic_number']
-        query = row['topic_query']
+    with open(f'{output_dir}/run.txt', 'w') as runfile:
+        for _, row in topics.iterrows():
+            number = row['topic_number']
+            query = row['topic_query']
 
-        print(f'Now working on query {number}: {query}', flush=True)
-        if queryexpansion>0:
+            print(f'Now working on query {number}: {query}', flush=True)
+            if queryexpansion>0:
+                response = conn.query_index(query, 1000, index)['hits']['hits']
+                expander = Expander(query, response, index)
+                extra = " ".join(expander.rank_searchterms(queryexpansion))
+                query = f'{query} {extra}'
+                print(f"Query '{query}' has been expanded with the terms '{extra}'", flush=True)
+
+            # query
             response = conn.query_index(query, 1000, index)['hits']['hits']
-            expander = Expander(query, response, index)
-            extra = " ".join(expander.rank_searchterms(queryexpansion))
-            query = f'{query} {extra}'
-            print(f"Query '{query}' has been expanded with the terms '{extra}'", flush=True)
 
-        # query
-        response = conn.query_index(query, 1000, index)['hits']['hits']
+            # apply bert reranking
+            if bert:
+                import ranking.ranking as ranking
+                print("Reranking with bert", flush=True)
+                response = ranking.rank(response, query, 15)
+                print(len(response))
 
-        # apply bert reranking
-        if bert:
-            print("Reranking with bert", flush=True)
-            response = ranking.rank(response, query, 15)
-            print(len(response))
+            # STORE RESULTS IN DICTIONARY
+            results = dict()
+            for hit in response:
+                results[hit['_id']] = hit['_score']
 
-        # STORE RESULTS IN DICTIONARY
-        results = dict()
-        for hit in response:
-            results[hit['_id']] = hit['_score']
+            # CONVERT DICTIONARY TO TREC-STYLE DATAFRAME
+            print("Formatting and writting data", flush=True)
+            final_ranks = pd.DataFrame(list(results.items()), columns=['arg_ids', 'score'])
+            final_ranks = final_ranks.sort_values(by='score', ascending=False)
+            final_ranks['rank'] = np.arange(len(final_ranks)) + 1
+            final_ranks['method'] = f"{index}_{queryexpansion}"
+            final_ranks['Q0'] = "Q0"
+            final_ranks['topic_number'] = number
 
-        # CONVERT DICTIONARY TO TREC-STYLE DATAFRAME
-        print("Formatting and writting data", flush=True)
-        final_ranks = pd.DataFrame(list(results.items()), columns=['arg_ids', 'score'])
-        final_ranks = final_ranks.sort_values(by='score', ascending=False)
-        final_ranks['rank'] = np.arange(len(final_ranks)) + 1
-        final_ranks['method'] = f"{index}_{queryexpansion}"
-        final_ranks['Q0'] = "Q0"
-        final_ranks['topic_number'] = number
+            # APPEND CURRENT DATAFRAME TO OUTPUT FILE
+            final_ranks[['topic_number', 'Q0', 'arg_ids', 'rank', 'score', 'method']].to_csv(runfile, sep=' ', header=False, index=False)
 
-        # APPEND CURRENT DATAFRAME TO OUTPUT FILE
-        with open(f'{output_dir}/run.txt', 'a+') as f:
-            final_ranks[['topic_number', 'Q0', 'arg_ids', 'rank', 'score', 'method']].to_csv(f, sep=' ', header=False,
-                                                                                             index=False)
-
-        # LOOK AT WHAT WAS ACTUALLY WRITTEN TO FILE
-        #print(final_ranks)
+            # LOOK AT WHAT WAS ACTUALLY WRITTEN TO FILE
+            #print(final_ranks)

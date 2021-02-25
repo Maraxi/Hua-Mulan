@@ -29,13 +29,13 @@ services:
                 user: root
                 volumes:
                         - type: bind
-                          source: .
+                          source: /home/ul-t1-mulan/Hua-Mulan/Hua-Mulan/
                           target: /root
                         - type: bind
-                          source: /media
+                          source: /home/ul-t1-mulan/media/
                           target: /media
                         - type: bind
-                          source: /tmp
+                          source: /home/ul-t1-mulan/Hua-Mulan/output/
                           target: /tmp
                 depends_on:
                         - elastic
