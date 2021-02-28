@@ -1,60 +1,33 @@
 # Hua-Mulan
 
-## Python virtual environment
+## Preprocessing
 
-To run the python scripts with the correct dependencies installed go to `Hua-Mulan/` and execute
-```
-$ pipenv sync
-$ pipenv shell
-```
-This installes needed modules specified in the `Piplock` file and starts a shell with the correct environment.
+`Hua-Mulan/preprocessing` contains all files needed to reproduce the document expansion. Note that the notebook for gpt2 and t5 expansion was executed in googlecolab on gpu. To reproduce, it is necessary to add the corresponding model files from the docT5query repository https://github.com/castorini/docTTTTTquery
 
 ## Data
 
-Download data from https://zenodo.org/record/3734893#.X5BreS337OQ and unzip in `data/`
+Download data from https://wolke.reinlach.de/s/kfGH6m3mBEdoRWQ and unzip in `Hua-Mulan/indexing`
 
-### Data analysis
 
-Run the following commands in `Hua-Mulan/exploration/`
+### Start searchengin
+
+If you have not build the directory for the elasticsearch index, run the following comand in `Hua-Mulan/`
+
+```
+$ mkdir indexing/elasticsearch_data
+```
+
+
+To start the searchengine run the following commands in `Hua-Mulan/`
+
+!! Note !! This will immediately trigger indexing, which can take up to a couple of hours. You can specify the indices you want to index in `Hua-Mulan/index.py` line 7, by removing the unwanted indices.
+
+
 ```
 $ docker-compose build
 $ docker-compose up
 ```
-Open one of the links given in the output and edit the Jupyter Notebook in a browser.
 
-## Indexing
-
-For starting and indexing with elasticsearch run following commands in `Hua-Mulan/`
-
-```
-$ docker-compose build
-$ docker-compose up
-```
-Elasticsearch index will be running on `localhost:9200` and save data to `elasticsearch_data/`.
-
-Index the data with:
-```
-$ python indexing/index.py
-```
-
-NEW: 
-For Indexing with DirichletLM, please create corresponding index with following shell put
-
-```
-curl -X PUT "localhost:9200/args-lm-dirichlet?pretty" -H 'Content-Type: application/json' -d'
-{
-            "settings": {
-                "index": {
-                    "similarity": {
-                        "lm-dirichlet": {
-                            "type": "LMDirichlet"
-                        }
-                    }
-                }
-            }
-        }
-'
-```
 
 ## Query Expansion
 
@@ -72,7 +45,9 @@ For simple querying create an instance of class `IndexConnector` and call method
 - for running download https://git.uwaterloo.ca/jimmylin/doc2query-data/raw/master/T5-passage/t5-base.zip and unzip in  `Hua-Mulan/doc2query/`
 - While the docker container is running. You can obtain a query corresponding to a string by sending it to localholst:5000/api/doc2query?arg=SOMESTRING
 
-## Runing code inside docker
+
+
+## Runing code queries against the index using docker
 Check if the container is running and healthy by inspecting the output of
 ```
 docker ps
@@ -87,5 +62,9 @@ docker exec python bash
 ```
 Or run the the script which reads querys from topics.xml and writes output with
 ```
-docker exec python python runTira.py -i /media -o /tmp
+docker exec python python runTira.py -i /media -o /tmp -de args_original -qe 0 -r 0 
 ```
+With the flags refering to the following parameters:     
+qe: query expansion, integer indicating the number of words to add  
+de: document expansion, refers to the name of the index  
+r: whether or not ranking should be applied, integer. Please note that reranking can take up to a couple of hours when executed on cpu. A version of the system with the ranking componen running on gpu is on another branch. Documentation will be added soon.
